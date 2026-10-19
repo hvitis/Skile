@@ -1,6 +1,7 @@
 ---
 name: blog-writing-guide
 description: Write, review, and improve blog posts for the Sentry engineering blog following Sentry's specific writing standards, voice, and quality bar. Use this skill whenever someone asks to write a blog post, draft a technical article, review blog content, improve a draft, write a product announcement, create an engineering deep-dive, or produce any written content destined for the Sentry blog or developer audience. Also trigger when the user mentions "blog post," "blog draft," "write-up," "announcement post," "engineering post," "deep dive," "postmortem," or asks for help with technical writing for Sentry. Even if the user just says "help me write about [feature/topic]" — if it sounds like it could become a Sentry blog post, use this skill.
+license: MIT
 ---
 
 # Sentry Blog Writing Skill
@@ -10,6 +11,10 @@ This skill enforces Sentry's blog writing standards across every post — whethe
 **The bar:** Every Sentry blog post should be something a senior engineer would share in their team's Slack, or reference in a technical decision.
 
 What follows are the core principles to internalize and apply to every piece of content.
+
+## Before Drafting: Diagram Preference
+
+Ask the user whether they want a graph or diagram in the post and, if so, what it should contain or explain, such as components, data flow, decision paths, or a comparison. Reuse preferences already provided; ask only for missing details. Continue work on the prose while waiting, but wait for the user's answer before adding a diagram. If they decline, omit it even for system descriptions.
 
 ## The Sentry Voice
 
@@ -86,7 +91,7 @@ When targeting a competitive search query:
 
 **Include a definitional section.** For any head term ("agent observability", "error monitoring"), top-ranking pages almost always have a "What is X?" section. Include one even if it feels basic.
 
-**Add an FAQ.** 3-4 questions targeting long-tail keywords at the bottom of the post. These can win featured snippets and People Also Ask boxes.
+**Answer likely reader questions in the closing section.** Use relevant theoretical questions and long-tail search queries as planning prompts, then weave their answers into a coherent wrap-up of the post. Follow **The Closing** below rather than appending an FAQ or a series of question-and-answer headings. Include answers only when they help resolve the post's argument; avoid keyword padding.
 
 ## AI Writing Patterns to Avoid
 
@@ -130,7 +135,9 @@ LLM-generated prose has tells. Flag and rewrite these:
 
 **Code must work.** If a post includes code, test it. Include imports, configuration, and context. Comments should explain *why*, not *what*.
 
-**Diagrams for systems.** If you describe a system with more than two interacting components, include a diagram. Label with real service names, not generic boxes.
+**Diagrams for systems.** A system with more than two interacting components may benefit from a diagram. Follow the user's diagram preference and agreed scope from **Before Drafting: Diagram Preference**. Label components with real service names, not generic boxes.
+
+**Horizontal Mermaid graphs.** When including a Mermaid flowchart, use `flowchart LR` (or `graph LR`) to lay it out from left to right and save vertical post space. Keep subgraphs horizontal too; avoid `TD` or `TB` layouts. Keep labels concise and show only the agreed content so the graph remains readable within the post width.
 
 **Honesty over hype.** Never overstate what a feature does. Acknowledge limitations. If something is in beta, say so. If a competitor does something well, it's okay to note that. Do not claim AI features are more capable than they are — "Seer suggests a likely root cause" ≠ "Seer finds the root cause."
 
@@ -138,10 +145,16 @@ LLM-generated prose has tells. Flag and rewrite these:
 
 The title is the highest-leverage sentence in the post. It must stop a developer scrolling through their RSS feed or Twitter.
 
+Draft a few catchy title candidates around the post's strongest supported finding, useful payoff, or surprising trade-off, then choose the one that best matches the finished content. Create curiosity through specificity and the real story.
+
+Check both the literal claim and the likely implication against the post. A title must preserve the direction of the findings, their scope, and any qualification that changes their meaning. Do not imply the opposite of what happened, invent a result, turn a limited observation into a universal claim, or promise an answer the post does not deliver. Use numbers only when supported by the post's evidence. Revise the title if the draft's conclusion changes.
+
 **Strong titles** make a specific claim, tell a story, or promise a specific payoff:
 - "The metrics product we built worked. But we killed it and started over anyway"
 - "How we reduced release delays by 5% by fixing Salt"
-- "Your JavaScript bundle has 47% dead code. Here's how to find it."
+- "How we found 47% dead code in our JavaScript bundle"
+
+For a post where caching improved throughput but left latency unchanged, "Caching improved throughput, but latency stayed flat" is accurate and intriguing. "How caching fixed our latency problem" contradicts the findings.
 
 **Weak titles** are vague announcements:
 - "Introducing our new metrics product"
@@ -150,7 +163,9 @@ The title is the highest-leverage sentence in the post. It must stop a developer
 
 ## The Closing
 
-End with something useful: a link to docs, source code, a way to try it, or a call to give feedback. Never end with generic hype ("We can't wait to see what you build!"), recaps of what you just said, or product-page CTAs ("Try Sentry for free. Included on all plans."). Connect back to the story you opened with, or give the reader something concrete to do next.
+Close with a section whose heading expresses the post's takeaway. Bring the main argument to a resolution, connect it to the opening problem, and explain what the reader can now conclude or do. Naturally weave in answers to the remaining theoretical questions a reader might have, such as when the approach applies, why the trade-off is acceptable, or where its limits matter. Use connected prose rather than an FAQ, a list of questions, or separate Q&A headings.
+
+Synthesize the implications instead of repeating a section-by-section recap. End with something useful where appropriate: a link to docs, source code, a way to try it, or a call to give feedback. Avoid generic hype ("We can't wait to see what you build!") and product-page CTAs ("Try Sentry for free. Included on all plans.").
 
 ## Post Types
 
@@ -180,7 +195,7 @@ Posts worth sharing contain at least one of:
 1. Never publish without a real person's name on it. No "The Sentry Team" bylines.
 2. Never publish code that doesn't work.
 3. Never say "we're excited to announce." Just announce it.
-4. If you describe a system, include a diagram.
+4. Ask whether the user wants a diagram and what it should show; include one only if wanted, and use a horizontal layout for Mermaid flowcharts.
 5. If you make a performance claim, include the number.
 6. If you discuss a decision, explain what you didn't choose and why.
 7. Every post must have a clear "who is this for" in the author's mind before writing.
@@ -205,7 +220,9 @@ Run through both checklists:
 - No corporate language, filler, or fluff
 - Headings convey information
 - Right length (not padded, not too thin)
-- Title is specific and compelling
+- Title is catchy, specific, and supported by the post; its implications match the findings and preserve essential qualifications
+- Closing resolves the argument and naturally answers relevant reader questions without an FAQ-style ending
+- Diagram preference and scope were confirmed; any Mermaid flowchart uses a horizontal layout
 
 **Final Check:**
 - Author byline is correct (real person's name)
