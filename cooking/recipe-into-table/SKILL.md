@@ -88,12 +88,12 @@ python3 <skill-dir>/scripts/render_recipe.py <recipe-slug>.json --pdf
 python3 <skill-dir>/scripts/render_recipe.py a.json b.json c.json -o <collection>.html --pdf
 ```
 
-The script writes the HTML and PDF next to `-o`, or next to the first JSON. It prints each recipe's grid size, the PDF engine used, and the page count.
+The script writes the HTML and PDF next to `-o`, or next to the first JSON. It prints each recipe's grid size, the PDF engine used, and the page count. It fits every recipe on one A4 page itself (see [Fitting the page](#fitting-the-page)): landscape, in smaller type for a bigger table, portrait only when no landscape size fits. `--portrait` and `--font-pt` pin the page instead.
 
 - Exit `2`: a tree is invalid. The message names the file and node path (e.g. `steps.inputs[0].inputs[2]`). Fix it and rerun.
 - Exit `1`: no PDF engine worked. The HTML is still written, so go to step 6.
 - `warning:` lines flag duplicate ingredient names, grids too large for a page, and tables spilling onto extra pages. Resolve each before moving on.
-- `--no-webfonts` swaps the Fredoka/Nunito web fonts for system fonts, for offline machines.
+- `--no-webfonts` swaps the Fraunces/Nunito web fonts for system fonts, for offline machines.
 
 If your host provides its own HTML-to-PDF tool, you can run it on the HTML instead of passing `--pdf`.
 
@@ -218,7 +218,11 @@ A complete tree. "Podsmaż" sits one level below its sibling "Ugotuj", so its ce
 
 ## Fitting the page
 
-The script picks the font size from the grid dimensions and defaults to A4 landscape. When it warns about size, or a page overflows:
+Every page starts landscape, in the type size the grid suggests (12.5 to 8.5 pt). A table that does not fit gets smaller type in half points, down to 7 pt; below 8.5 pt its cells' padding shrinks with the type. Only a table that fits no landscape size turns portrait, down to 6 pt. A page fits when nothing is cut off. The table cannot break across pages, so a page that is too small clips it rather than spilling onto a second page.
+
+Chrome fits the pages with a script inside the HTML, so a browser printing the HTML fits them too. WeasyPrint fits them in Python. The `weasyprint` command-line tool cannot fit them, and the engine line says so.
+
+When a page is crowded even so:
 
 - **Too wide:** merge chains of single-input actions ("Nakładaj" then "Piecz" becomes "Nałóż i piecz", with both details joined), and shorten `detail` text.
-- **Too tall:** try `--portrait` (still A4), then a smaller `--font-pt`. For a recipe with independent sub-recipes (dough and filling, cake and frosting), offer the user one page per component.
+- **Too tall:** for a recipe with independent sub-recipes (dough and filling, cake and frosting), offer the user one page per component. Use `--font-pt` or `--portrait` only when the user asks for a particular size or orientation.
